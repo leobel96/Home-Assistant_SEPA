@@ -1,0 +1,33 @@
+light:
+ - platform: sepa_light
+   update_url: http://10.0.2.2:8000/update
+   name: luce1
+   state_predicate: stato
+   brightness_predicate: luminosita
+   color_temp_predicate: temperatura
+   rgb_predicate: rgb
+   white_value_predicate: bianco
+   xy_predicate: xy
+    
+sensor:
+ - platform: sepa_query
+   queries:
+     - name: query
+       query_url: http://10.0.2.2:8000/query
+       query_subject: <http://dispositivo/s>
+       query_predicate: <http://dispositivo/p>
+       
+ - platform: sepa_query
+   queries:
+     - name: query2
+       query_url: http://10.0.2.2:8000/query
+       query_subject: <http://dispositivo2/s>
+       query_predicate: <http://dispositivo2/p>
+   
+
+ - platform: sepa_subscribe
+   subscriptions:
+     - name: sottoscrizione
+       subscribe_url: ws://10.0.2.2:9000/subscribe
+       subscribe_subject: <http://dispositivo3/s>
+       subscribe_predicate: <http://dispositivo3/p>
