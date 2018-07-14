@@ -1,5 +1,62 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 10
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Rome
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+  # api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
 light:
- - platform: sepa_light
+ - platform: sepa_update
    update_url: http://10.0.2.2:8000/update
    name: luce1
    state_predicate: stato
@@ -14,20 +71,107 @@ sensor:
    queries:
      - name: query
        query_url: http://10.0.2.2:8000/query
-       query_subject: <http://dispositivo/s>
-       query_predicate: <http://dispositivo/p>
+       query_subject: <http://www.home-assistant.io/luce1>
+       query_predicate: <http://www.home-assistant.io/stato>
        
  - platform: sepa_query
    queries:
      - name: query2
        query_url: http://10.0.2.2:8000/query
-       query_subject: <http://dispositivo2/s>
-       query_predicate: <http://dispositivo2/p>
+       query_subject: <http://www.home-assistant.io/luce1>
+       query_predicate: <http://www.home-assistant.io/luminosita>
    
 
  - platform: sepa_subscribe
    subscriptions:
      - name: sottoscrizione
        subscribe_url: ws://10.0.2.2:9000/subscribe
-       subscribe_subject: <http://dispositivo3/s>
-       subscribe_predicate: <http://dispositivo3/p>
+       subscribe_subject: <http://www.home-assistant.io/luce1>
+       subscribe_predicate: <http://www.home-assistant.io/temperatura>
+
+#  - platform: wunderground
+#    api_key: !secret wunderground
+#    lang: IT
+#    monitored_conditions:
+#      - weather_1d_metric
+#      - precip_1d
+#      - temp_low_1d_c
+#      - temp_high_1d_c
+#      - weather_2d_metric
+#      - precip_2d
+#      - temp_low_2d_c
+#      - temp_high_2d_c
+#      - weather_3d_metric
+#      - precip_3d
+#      - temp_low_3d_c
+#      - temp_high_3d_c
+#      - weather_4d_metric
+#      - precip_4d
+#      - temp_low_4d_c
+#      - temp_high_4d_c
+  
+#  - platform: template
+#    sensors:
+#      day1:
+#        friendly_name: "Oggi"
+#        entity_picture_template: "{{ states.sensor.pws_weather_1d_metric.attributes.entity_picture }}"
+#        value_template: "{{ states('sensor.pws_weather_1d_metric').split('.')[0] }}"
+#      day2:
+#        friendly_name: "Domani"
+#        entity_picture_template: "{{ states.sensor.pws_weather_2d_metric.attributes.entity_picture }}"
+#        value_template: "{{ states('sensor.pws_weather_2d_metric').split('.')[0] }}"
+#      day3:
+#        friendly_name: "Tra due giorni"
+#        entity_picture_template: "{{ states.sensor.pws_weather_3d_metric.attributes.entity_picture }}"
+#        value_template: "{{ states('sensor.pws_weather_3d_metric').split('.')[0] }}"
+#      day4:
+#        friendly_name: "Tra tre giorni"
+#        entity_picture_template: "{{ states.sensor.pws_weather_4d_metric.attributes.entity_picture }}"
+#        value_template: "{{ states('sensor.pws_weather_4d_metric').split('.')[0] }}"
+      
+# Text to speech
+tts:
+  - platform: google
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+mqtt:
+  broker: localhost
+  port: 1883
+  client_id: Home-Assistant
+  keepalive: 60
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+  protocol: 3.1
+  #birth_message:
+    # topic: "tele/hass1/LWT"
+    # payload: "Online"
+    # qos: 1
+    # retain: true
+  # will_message:
+    # topic: "tele/hass1/LWT"
+    # payload: "Offline"
+    # qos: 1
+    # retain: true
+  
+# switch:
+  # - platform: mqtt
+    # name: "Sonoff power"
+    # state_topic: "stat/sonoff/POWER"
+    # command_topic: "cmnd/sonoff/POWER"
+    # availability_topic: "tele/sonoff/LWT"
+    # qos: 1
+    # payload_on: "ON"
+    # payload_off: "OFF"
+    # payload_available: "Online"
+    # payload_not_available: "Offline"
+    # retain: true
+
+#hello_world:
+#scheda_a:
+#sepa_update:
+#sepa_query:
+
+
